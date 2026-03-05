@@ -2,66 +2,91 @@ const Event = require("../models/Event");
 const Participant = require("../models/Participant");
 
 exports.createEvent = async (req, res) => {
-  const { title, description, upiId, amount, participantIdPrefix } = req.body;
+  try {
 
-  const event = await Event.create({
-    title,
-    description,
-    department: req.user.department,
-    createdBy: req.user._id,
-    upiId,
-    amount,
-    participantIdPrefix,
-    status: "PENDING",
-  });
+    // Role check
+    console.log(req.user);
+    if (req.user.role !== "HOD" && req.user.role !== "ADMIN") {
+      return res.status(403).json({ message: "Only HOD and ADMIN can create events" });
+    }
 
-  res.json(event);
+    const { title, description, upiId, amount, participantIdPrefix } = req.body;
+
+    const event = await Event.create({
+      title,
+      description,
+      department: req.user.department,
+      createdBy: req.user._id,
+      upiId,
+      amount,
+      participantIdPrefix,
+      status: "PENDING",
+    });
+
+    res.status(201).json(event);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.getPendingEvents = async (req, res) => {
-  const events = await Event.find({ status: "PENDING" });
-  res.json(events);
+  try {
+    const events = await Event.find({ status: "PENDING" });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.approveEvent = async (req, res) => {
-  const event = await Event.findById(req.params.id);
-  event.status = "APPROVED";
-  await event.save();
-  res.json({ message: "Event Approved" });
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+    event.status = "APPROVED";
+    await event.save();
+    res.json({ message: "Event Approved" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.rejectEvent = async (req, res) => {
-  const event = await Event.findById(req.params.id);
-  event.status = "REJECTED";
-  await event.save();
-  res.json({ message: "Event Rejected" });
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+    event.status = "REJECTED";
+    await event.save();
+    res.json({ message: "Event Rejected" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.getApprovedEvents = async (req, res) => {
-  const events = await Event.find({ status: "APPROVED" });
-  res.json(events);
-};
-
-exports.uploadPaymentProof = async (req, res) => {
-  const participant = await Participant.findById(req.params.id);
-
-  participant.paymentScreenshot = req.file.path;
-  participant.paymentStatus = "PENDING";
-
-  await participant.save();
-
-  res.json({ message: "Screenshot Uploaded" });
+  try {
+    const events = await Event.find({ status: "APPROVED" });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.markEventCompleted = async (req, res) => {
-  const event = await Event.findById(req.params.id);
+  try {
+    console.log(req.user);
+    if (req.user.role !== "ADMIN" && req.user.role !== "HOD") {
+      return res.status(403).json({ message: "Access Denied" });
+    }
 
-  if (!event) {
-    return res.status(404).json({ message: "Event not found" });
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    event.status = "COMPLETED";
+    await event.save();
+    res.json({ message: "Event marked as completed" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  event.status = "COMPLETED";
-  await event.save();
-
-  res.json({ message: "Event marked as completed" });
 };

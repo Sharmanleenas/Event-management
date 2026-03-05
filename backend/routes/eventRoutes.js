@@ -9,9 +9,13 @@ const {
   getPendingEvents,
   approveEvent,
   rejectEvent,
+  getApprovedEvents,
+  markEventCompleted,
 } = require("../controllers/eventController");
 
-router.post("/create", protect, authorizeRoles("HOD", "LEADER"), createEvent);
+const { verifyPayment } = require("../controllers/participantController");
+
+router.post("/create", protect, createEvent);
 
 router.get("/pending", protect, authorizeRoles("ADMIN"), getPendingEvents);
 
@@ -27,6 +31,6 @@ router.put(
   verifyPayment,
 );
 
-router.put("/complete/:id", protect, authorizeRoles("HOD"), markEventCompleted);
+router.put("/complete/:id", protect, markEventCompleted);
 
 module.exports = router;

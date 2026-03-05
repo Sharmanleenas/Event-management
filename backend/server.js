@@ -4,14 +4,14 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
 
-app.use(morgan("dev"));
-
 const connectDB = require("./config/db");
 
 dotenv.config();
 connectDB();
 
-const app = express();
+const app = express();   // ✅ create app first
+
+app.use(morgan("dev"));  // ✅ now it works
 
 // Rate Limiter
 const limiter = rateLimit({
@@ -36,5 +36,5 @@ const errorHandler = require("./middleware/errorMiddleware");
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`),
+  console.log(`Server running on port ${process.env.PORT}`)
 );
