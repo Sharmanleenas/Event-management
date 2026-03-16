@@ -21,7 +21,7 @@ router.post("/register", registerParticipant);
 
 router.post(
   "/upload/:id",
-  upload.single("payment"),
+  upload.any(),
   uploadPaymentProof
 );
 

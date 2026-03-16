@@ -50,7 +50,7 @@ exports.registerParticipant = async (req, res) => {
               <h3 style="text-align: center; color: #333; margin-top: 0;">Complete Your Payment</h3>
               <p style="text-align: center; font-size: 15px; color: #555;">Please scan the QR code below to pay <b>₹${event.amount}</b>.</p>
               <div style="text-align: center; margin: 20px 0;">
-                <img src="${qrImage}" alt="Payment QR Code" style="width: 220px; height: 220px; border: 4px solid #f4f6f8; border-radius: 12px;" />
+                <img src="cid:qrcode" alt="Payment QR Code" style="width: 220px; height: 220px; border: 4px solid #f4f6f8; border-radius: 12px;" />
               </div>
               <p style="text-align: center; font-size: 14px; color: #777; margin-bottom: 0;">UPI ID: <b>${event.upiId}</b></p>
             </div>
@@ -59,6 +59,13 @@ exports.registerParticipant = async (req, res) => {
             </div>
           </div>
         `,
+        attachments: [
+          {
+            filename: "qrcode.png",
+            path: qrImage,
+            cid: "qrcode",
+          },
+        ],
       });
     } catch (emailError) {
       console.error("SMTP Error: Failed to send email.", emailError.message);
@@ -80,11 +87,13 @@ exports.uploadPaymentProof = async (req, res) => {
     const participant = await Participant.findById(req.params.id);
     if (!participant) return res.status(404).json({ message: "Participant not found" });
 
-    if (!req.file) {
+    let file = req.file || (req.files && req.files.length > 0 ? req.files[0] : null);
+
+    if (!file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const result = await cloudinary.uploader.upload(file.path);
     participant.paymentScreenshot = result.secure_url;
     participant.paymentStatus = "PENDING";
     await participant.save();
