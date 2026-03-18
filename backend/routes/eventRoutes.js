@@ -11,11 +11,24 @@ const {
   rejectEvent,
   getApprovedEvents,
   markEventCompleted,
+  getEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent,
+  addComment,
+  addRule,
 } = require("../controllers/eventController");
 
 const { verifyPayment } = require("../controllers/participantController");
 
 router.post("/create", protect, createEvent);
+
+router.get("/", protect, getEvents);
+router.post("/comment/:id", protect, addComment);
+router.post("/rule/:id", protect, addRule);
+router.get("/:id", protect, getEventById);
+router.put("/:id", protect, updateEvent);
+router.delete("/:id", protect, deleteEvent);
 
 router.get("/pending", protect, authorizeRoles("ADMIN"), getPendingEvents);
 

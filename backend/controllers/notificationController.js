@@ -12,6 +12,14 @@ exports.getNotifications = async (req, res) => {
   }
 };
 
+exports.createNotification = async (userId, title, message) => {
+  try {
+    await Notification.create({ userId, title, message });
+  } catch (error) {
+    console.error("Failed to create notification:", error.message);
+  }
+};
+
 exports.markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);

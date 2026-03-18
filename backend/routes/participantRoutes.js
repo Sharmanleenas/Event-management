@@ -3,7 +3,10 @@ const router = express.Router();
 const {
   registerParticipant,
   uploadPaymentProof,
+  getPendingVerifications,
 } = require("../controllers/participantController");
+const protect = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/roleMiddleware");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -24,5 +27,7 @@ router.post(
   upload.any(),
   uploadPaymentProof
 );
+
+router.get("/verify", protect, authorizeRoles("LEADER", "HOD", "ADMIN"), getPendingVerifications);
 
 module.exports = router;

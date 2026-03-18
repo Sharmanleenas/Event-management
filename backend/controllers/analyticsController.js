@@ -3,12 +3,12 @@ const Event = require("../models/Event");
 
 exports.getAnalytics = async (req, res) => {
   try {
-    const totalEvents = await Event.countDocuments({ status: "APPROVED" });
+    const totalEvents = await Event.countDocuments({ status: { $regex: /^approved$/i } });
 
     const totalParticipants = await Participant.countDocuments();
 
     const revenueData = await Participant.aggregate([
-      { $match: { paymentStatus: "APPROVED" } },
+      { $match: { paymentStatus: { $regex: /^approved$/i } } },
       {
         $lookup: {
           from: "events",

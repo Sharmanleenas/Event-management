@@ -17,6 +17,23 @@ const eventSchema = new mongoose.Schema(
       enum: ["PENDING", "APPROVED", "REJECTED", "COMPLETED"],
       default: "PENDING",
     },
+    parentEvent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+      default: null,
+    },
+    rules: {
+      type: [String],
+      default: [],
+    },
+    comments: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        userName: String,
+        text: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true },
 );

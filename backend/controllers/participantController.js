@@ -1,5 +1,6 @@
 const Participant = require("../models/Participant");
 const Event = require("../models/Event");
+const Notification = require("../models/Notification");
 const generateParticipantId = require("../utils/generateParticipantId");
 const QRCode = require("qrcode");
 const sendEmail = require("../utils/sendEmail");
@@ -29,6 +30,15 @@ exports.registerParticipant = async (req, res) => {
       phone,
       eventId,
     });
+
+    // Notify Event Creator
+    if (event.createdBy) {
+      await Notification.create({
+        userId: event.createdBy,
+        title: "New Registration",
+        message: `${name} registered for ${event.title}. Verification required.`,
+      });
+    }
 
     try {
       await sendEmail({
@@ -119,6 +129,15 @@ exports.verifyPayment = async (req, res) => {
     await participant.save();
 
     res.json({ message: "Payment Verified Successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPendingVerifications = async (req, res) => {
+  try {
+    const participants = await Participant.find({ paymentStatus: "PENDING" }).populate("eventId", "title amount");
+    res.json(participants);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

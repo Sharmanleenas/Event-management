@@ -31,7 +31,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    // Search for user with case-insensitive email
+    const user = await User.findOne({ 
+      email: { $regex: new RegExp(`^${email}$`, 'i') } 
+    });
+    
     if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
         _id: user._id,

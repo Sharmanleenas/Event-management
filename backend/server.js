@@ -13,10 +13,12 @@ const app = express();   // ✅ create app first
 
 app.use(morgan("dev"));  // ✅ now it works
 
-// Rate Limiter
+// Relaxed Rate Limiter for Dev/Testing
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 app.use(limiter);
@@ -26,6 +28,7 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/participants", require("./routes/participantRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-opera-indigo: #233E65;
+  --color-opera-burgundy: #710927;
+  --color-opera-brass: #C49F6D;
+  --color-opera-plaster: #F0EFEA;
+  --color-opera-linen: #DDD1BC;
+  
+  --font-sans: "DM Sans", sans-serif;
+  --font-serif: "Playfair Display", serif;
+}
+
+:root {
+  --color-opera-indigo: #233E65;
+  --color-opera-burgundy: #710927;
+  --color-opera-brass: #C49F6D;
+  --color-opera-plaster: #F0EFEA;
+  --color-opera-linen: #DDD1BC;
+  
+  --primary: var(--color-opera-indigo);
+  --secondary: var(--color-opera-burgundy);
+  --accent: var(--color-opera-brass);
+}
+
+@layer base {
+  html, body {
+    background-color: var(--color-opera-plaster);
+    color: var(--color-opera-indigo);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+  }
+
+  /* Custom scrollbar styling (Brass thumb on Plaster track) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-opera-plaster);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-opera-brass);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a88456;
+  }
+}
