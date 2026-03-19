@@ -10,7 +10,7 @@ exports.createEvent = async (req, res) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    const { title, description, upiId, amount, participantIdPrefix, rules, parentEvent } = req.body;
+    const { title, description, upiId, feeAmount, participantIdPrefix, rules, parentEvent, date, venue, games, maxGamesPerParticipant } = req.body;
 
     const event = await Event.create({
       title,
@@ -18,11 +18,16 @@ exports.createEvent = async (req, res) => {
       department: req.user.department,
       createdBy: req.user._id,
       upiId,
-      amount: amount || 0,
+      feeAmount: feeAmount || 0,
       participantIdPrefix,
       status: userRole === "ADMIN" ? "APPROVED" : "PENDING",
       rules,
-      parentEvent
+      parentEvent,
+      date: date || Date.now(),
+      venue: venue || 'TBD',
+      isRegistrationOpen: false,
+      games: games || [],
+      maxGamesPerParticipant: maxGamesPerParticipant || 3
     });
 
     if (userRole !== "ADMIN" && !parentEvent) {
@@ -212,6 +217,28 @@ exports.addRule = async (req, res) => {
     event.rules.push(rule);
     await event.save();
     res.status(201).json(event);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.toggleRegistration = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    const userRole = req.user.role?.toUpperCase();
+    if (event.createdBy.toString() !== req.user._id.toString() && userRole !== "ADMIN") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    event.isRegistrationOpen = !event.isRegistrationOpen;
+    await event.save();
+
+    res.json({ 
+      message: `Registration ${event.isRegistrationOpen ? 'Opened' : 'Closed'}`,
+      isRegistrationOpen: event.isRegistrationOpen 
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

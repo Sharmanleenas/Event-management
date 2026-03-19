@@ -39,3 +39,14 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getUsersByRole = async (req, res) => {
+  try {
+    const { role } = req.query;
+    const filter = role ? { role } : {};
+    const users = await User.find(filter).select("-password").sort({ name: 1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

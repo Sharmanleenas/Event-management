@@ -10,6 +10,10 @@ const participantSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
     },
+    registerNumber: String,
+    department: String,
+    college: { type: String, default: "Sacred Heart College" },
+    selectedGames: [String],
     paymentScreenshot: String,
     paymentStatus: {
       type: String,

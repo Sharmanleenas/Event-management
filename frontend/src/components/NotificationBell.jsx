@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import '../styles/components.css';
 
@@ -6,12 +7,21 @@ const NotificationBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [isPopping, setIsPopping] = useState(false);
+  const prevCount = useRef(0);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await axiosInstance.get('/api/notifications');
         const unread = response.data.filter(n => !n.read).length;
+        
+        if (unread > prevCount.current) {
+          setIsPopping(true);
+          setTimeout(() => setIsPopping(false), 2000);
+        }
+        
+        prevCount.current = unread;
         setUnreadCount(unread);
         setNotifications(response.data);
       } catch (error) {
@@ -37,9 +47,9 @@ const NotificationBell = () => {
   };
 
   return (
-    <div className="notification-bell-container">
+    <div className={`notification-bell-container ${isPopping ? 'pop-anim' : ''}`}>
       <div className="bell-icon" onClick={handleToggle}>
-        🔔
+        <span className="bell-emoji">🔔</span>
         {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}
       </div>
       
@@ -62,6 +72,9 @@ const NotificationBell = () => {
               ))
             )}
           </div>
+          <Link to="/notifications" className="view-all-link" onClick={() => setShowDropdown(false)}>
+            View All Notifications →
+          </Link>
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ const {
   uploadPaymentProof,
   getPendingVerifications,
   verifyPayment,
+  getParticipantsByEvent,
 } = require("../controllers/participantController");
 const protect = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
@@ -31,5 +32,6 @@ router.post(
 
 router.get("/verify", protect, authorizeRoles("LEADER", "HOD", "ADMIN"), getPendingVerifications);
 router.put("/verify/:id", protect, authorizeRoles("LEADER", "HOD", "ADMIN"), verifyPayment);
+router.get("/event/:id", protect, authorizeRoles("HOD", "ADMIN"), getParticipantsByEvent);
 
 module.exports = router;

@@ -121,23 +121,30 @@ exports.getLeaderAnalytics = async (req, res) => {
       });
     }
 
-    const totalRegistrations = await Participant.countDocuments({ eventId: event._id });
+    const totalParticipants = await Participant.countDocuments({ eventId: event._id });
     const pendingVerification = await Participant.countDocuments({ 
       eventId: event._id, 
-      paymentStatus: { $regex: /^pending$/i } 
+      paymentStatus: "PENDING" 
+    });
+    const verifiedParticipants = await Participant.countDocuments({
+      eventId: event._id,
+      paymentStatus: "APPROVED"
     });
 
-    const gameStats = (event.rules || []).slice(0, 3).map((rule, index) => ({
-      name: `Game ${index + 1}`,
-      filled: Math.floor(Math.random() * 20),
-      limit: 25
+    const gameStats = (event.games || []).map(game => ({
+      name: game.name,
+      filled: game.currentRegistrations || 0,
+      limit: game.participantLimit || 25
     }));
 
     res.json({
+      eventId: event._id,
       eventName: event.title,
       totalGames: gameStats.length,
-      totalRegistrations,
+      totalParticipants,
+      verifiedParticipants,
       pendingVerification,
+      totalAmount: verifiedParticipants * (event.feeAmount || 0),
       gameStats
     });
   } catch (error) {

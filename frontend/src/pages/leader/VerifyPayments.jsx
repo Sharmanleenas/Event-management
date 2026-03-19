@@ -64,8 +64,8 @@ const VerifyPayments = () => {
                   </td>
                   <td>
                     <div className="action-btns">
-                      <button className="btn-success btn-sm" onClick={() => handleAction(p._id, 'Approved')}>Approve</button>
-                      <button className="btn-error btn-sm" onClick={() => handleAction(p._id, 'Rejected')}>Reject</button>
+                      <button className="btn-success btn-sm" style={{fontSize:"14px" , padding:"10px", backgroundColor:"#68ca54ff", borderRadius:"20px", color:"white", border:"#282e2dff solid 2px", hover:"#0e140cff !important" }} onClick={() => handleAction(p._id, 'Approved')}>Approve</button>
+                      <button className="btn-error btn-sm" style={{fontSize:"14px" , padding:"10px", backgroundColor:"#e10d0d80", borderRadius:"20px", color:"white", border:"#282e2dff solid 2px", hover:"#40ff00ff !important" }} onClick={() => handleAction(p._id, 'Rejected')}>Reject</button>
                     </div>
                   </td>
                 </tr>

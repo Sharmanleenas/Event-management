@@ -1,21 +1,49 @@
-.college-header {
-  background: var(--burgundy);
-  color: var(--white);
-  padding: 2rem 0;
-  text-align: center;
+.background-liquid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  overflow: hidden;
 }
 
-.college-header h1 {
-  color: var(--white);
-  font-size: 2.2rem;
-  margin-bottom: 0.5rem;
+.background-liquid::before,
+.background-liquid::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(196, 159, 109, 0.05);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: liquidRotate 20s linear infinite;
 }
 
-.college-header p {
-  font-family: 'DM Sans', sans-serif;
-  letter-spacing: 1px;
-  font-size: 1rem;
-  color: var(--linen);
+.background-liquid::before {
+  top: -100px;
+  right: -100px;
+}
+
+.background-liquid::after {
+  bottom: -100px;
+  left: -200px;
+  width: 800px;
+  height: 800px;
+  background: rgba(26, 42, 68, 0.03);
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+@keyframes liquidRotate {
+  0% { transform: rotate(0deg) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  50% { transform: rotate(180deg) scale(1.1); border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; }
+  100% { transform: rotate(360deg) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+}
+
+.landing-page {
+  position: relative;
+  min-height: 100vh;
 }
 
 .events-section {
@@ -44,7 +72,69 @@
 .event-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 3rem;
+  perspective: 1000px;
+}
+
+.event-card {
+  border-radius: 28px !important;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: revealPop 0.8s ease backwards; /* Changed to revealPop */
+}
+
+@keyframes revealPop {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.event-card:hover {
+  transform: translateY(-15px) scale(1.03); /* Pop-up scale */
+  box-shadow: 0 30px 60px -12px rgba(0,0,0,0.15);
+}
+
+/* Contact Section */
+.contact-section {
+  padding: 6rem 20px;
+}
+
+.contact-card {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  padding: 0 !important;
+  border-radius: 32px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px);
+}
+
+.contact-info {
+  background: var(--indigo);
+  color: var(--white);
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contact-info h2 {
+  color: var(--white);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.contact-form {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-form input, .contact-form textarea {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
 }
 
 .skeleton-card {

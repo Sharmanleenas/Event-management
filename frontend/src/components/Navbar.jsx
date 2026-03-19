@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import '../styles/navbar.css';
@@ -8,6 +8,11 @@ const Navbar = () => {
   const { user, role, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isDashboard = location.pathname.startsWith('/admin') || 
+                      location.pathname.startsWith('/hod') || 
+                      location.pathname.startsWith('/leader');
 
   const handleLogout = () => {
     logout();
@@ -28,19 +33,41 @@ const Navbar = () => {
         </Link>
 
         <div className={`nav-menu ${isOpen ? 'active' : ''}`}>
-          <Link to="/" className="nav-link" onClick={() => setIsOpen(false)}>Home</Link>
-          <button 
-            className="nav-link btn-link" 
-            onClick={() => {
-              setIsOpen(false);
-              navigate('/');
-              setTimeout(() => {
-                document.getElementById('events-section')?.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
-            }}
-          >
-            Events
-          </button>
+          {!isDashboard && (
+            <>
+              <Link to="/" className="nav-link" onClick={() => setIsOpen(false)}>Home</Link>
+              <button 
+                className="nav-link btn-link" 
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/');
+                  setTimeout(() => {
+                    document.getElementById('events-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+              >
+                Events
+              </button>
+              
+              <button 
+                className="nav-link btn-link" 
+                onClick={() => {
+                  setIsOpen(false);
+                  const contactSection = document.getElementById('contact-section');
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    navigate('/');
+                    setTimeout(() => {
+                      document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }
+                }}
+              >
+                Contact
+              </button>
+            </>
+          )}
           
           {user ? (
             <>

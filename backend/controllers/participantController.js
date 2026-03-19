@@ -8,7 +8,7 @@ const cloudinary = require("../config/cloudinary");
 
 exports.registerParticipant = async (req, res) => {
   try {
-    const { name, email, phone, eventId } = req.body;
+    const { name, email, phone, eventId, registerNumber, department, college, selectedGames } = req.body;
     const event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ message: "Event not found" });
     if (event.status !== "APPROVED") {
@@ -29,6 +29,10 @@ exports.registerParticipant = async (req, res) => {
       email,
       phone,
       eventId,
+      registerNumber,
+      department,
+      college: college || "Sacred Heart College",
+      selectedGames: selectedGames || []
     });
 
     // Notify Event Creator
@@ -137,6 +141,17 @@ exports.verifyPayment = async (req, res) => {
 exports.getPendingVerifications = async (req, res) => {
   try {
     const participants = await Participant.find({ paymentStatus: "PENDING" }).populate("eventId", "title amount");
+    res.json(participants);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getParticipantsByEvent = async (req, res) => {
+  try {
+    const participants = await Participant.find({ eventId: req.params.id })
+      .populate("eventId", "title department")
+      .sort({ createdAt: -1 });
     res.json(participants);
   } catch (error) {
     res.status(500).json({ message: error.message });

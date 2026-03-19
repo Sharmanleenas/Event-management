@@ -15,7 +15,7 @@ const EventDetailsPage = () => {
   if (!event) return <div className="container">Event not found.</div>;
 
   const handleRegister = () => {
-    if (event.status !== 'Approved') return;
+    if (event.status?.toUpperCase() !== 'APPROVED' || !event.isRegistrationOpen) return;
     navigate(`/register/${id}`);
   };
 
@@ -82,16 +82,19 @@ const EventDetailsPage = () => {
             </div>
             
             <button 
-              className={`btn-primary register-btn ${event.status !== 'Approved' ? 'disabled' : ''}`}
+              className={`btn-primary register-btn ${(event.status?.toUpperCase() !== 'APPROVED' || !event.isRegistrationOpen) ? 'disabled' : ''}`}
               onClick={handleRegister}
-              disabled={event.status !== 'Approved'}
-              title={event.status !== 'Approved' ? 'Registration will open once event is approved' : ''}
+              disabled={event.status?.toUpperCase() !== 'APPROVED' || !event.isRegistrationOpen}
+              title={event.status?.toUpperCase() !== 'APPROVED' ? 'Registration will open once event is approved' : !event.isRegistrationOpen ? 'Registration is temporarily closed' : ''}
             >
-              {event.status === 'Approved' ? 'Register Now →' : 'Registration Closed'}
+              {event.status?.toUpperCase() === 'APPROVED' && event.isRegistrationOpen ? 'Register Now →' : 'Registration Closed'}
             </button>
             
-            {event.status !== 'Approved' && (
+            {event.status?.toUpperCase() !== 'APPROVED' && (
               <p className="status-note">This event is currently awaiting administrative approval.</p>
+            )}
+            {event.status?.toUpperCase() === 'APPROVED' && !event.isRegistrationOpen && (
+              <p className="status-note" style={{ color: 'var(--brass)' }}>Registration has not started yet or is currently paused.</p>
             )}
           </div>
         </div>

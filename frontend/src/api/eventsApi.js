@@ -6,7 +6,7 @@ export const getPublicEvents = async () => {
 };
 
 export const getEventDetails = async (id) => {
-  const response = await axiosInstance.get(`/api/events/${id}`);
+  const response = await axiosInstance.get(`/api/events/details/${id}`);
   return response.data;
 };
 

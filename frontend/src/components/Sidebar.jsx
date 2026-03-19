@@ -13,6 +13,7 @@ const Sidebar = () => {
           { path: '/admin', label: 'Dashboard Overview', icon: '📊' },
           { path: '/admin/pending', label: 'Pending Events', icon: '⏳' },
           { path: '/admin/departments', label: 'Departments', icon: '🏢' },
+          { path: '/admin/messages', label: 'Messages', icon: '📩' },
           { path: '/admin/notifications', label: 'Notifications', icon: '🔔' },
         ];
       case 'HOD':

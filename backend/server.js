@@ -39,6 +39,7 @@ app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/certificate", require("./routes/certificateRoutes"));
 app.use("/api/ses", require("./routes/sesRoutes"));
+app.use("/api/contacts", require("./routes/contactRoutes"));
 app.use("/api/departments", require("./routes/departmentRoutes"));
 
 const errorHandler = require("./middleware/errorMiddleware");

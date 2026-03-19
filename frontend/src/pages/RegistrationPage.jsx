@@ -115,6 +115,16 @@ const RegistrationPage = () => {
 
   if (loading) return <Loader />;
 
+  if (!event) {
+    return (
+      <div className="container text-center" style={{ padding: '100px 20px' }}>
+        <h2 style={{ color: 'var(--brass)', marginBottom: '20px' }}>Event Not Found</h2>
+        <p style={{ color: '#888', marginBottom: '30px' }}>The registration link may be invalid or the event has been removed.</p>
+        <button className="btn-primary" onClick={() => navigate('/')}>Return to Events</button>
+      </div>
+    );
+  }
+
   return (
     <div className="registration-page container">
       <div className="registration-container card">
@@ -167,22 +177,26 @@ const RegistrationPage = () => {
         {step === 2 && (
           <div className="form-step">
             <h2>Select Games</h2>
-            <p className="step-desc">Pick up to {event.maxGamesPerParticipant} events you want to participate in.</p>
+            <p className="step-desc">Pick up to {event?.maxGamesPerParticipant || 3} events you want to participate in.</p>
             <div className="games-grid">
-              {event.games.map((game, i) => (
-                <div 
-                  key={i} 
-                  className={`game-selection-card ${formData.selectedGames.includes(game.name) ? 'selected' : ''}`}
-                  onClick={() => toggleGame(game.name)}
-                >
-                  <div className="game-check"></div>
-                  <h4>{game.name}</h4>
-                  <p className="game-cat badge badge-brass">{game.category}</p>
-                  <div className="game-slots-remaining">
-                    Slots: {game.participantLimit - (game.currentRegistrations || 0)} left
+              {event?.games?.length > 0 ? (
+                event.games.map((game, i) => (
+                  <div 
+                    key={i} 
+                    className={`game-selection-card ${formData.selectedGames.includes(game.name) ? 'selected' : ''}`}
+                    onClick={() => toggleGame(game.name)}
+                  >
+                    <div className="game-check"></div>
+                    <h4>{game.name}</h4>
+                    <p className="game-cat badge badge-brass">{game.category}</p>
+                    <div className="game-slots-remaining">
+                      Slots: {(game.participantLimit || 0) - (game.currentRegistrations || 0)} left
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>No games registered for this event yet.</p>
+              )}
             </div>
           </div>
         )}
@@ -193,11 +207,11 @@ const RegistrationPage = () => {
             <div className="payment-layout">
               <div className="qr-section">
                 <QRCodeSVG 
-                  value={`upi://pay?pa=${event.upiId || 'shc@upi'}&pn=SacredHeartCollege&am=${event.feeAmount}&cu=INR`} 
+                  value={`upi://pay?pa=${event?.upiId || 'shc@upi'}&pn=SacredHeartCollege&am=${event?.feeAmount || 0}&cu=INR`} 
                   size={200}
                 />
-                <p className="upi-id">{event.upiId || 'shc@upi'}</p>
-                <p className="payment-amount">Pay: ₹{event.feeAmount}</p>
+                <p className="upi-id">{event?.upiId || 'shc@upi'}</p>
+                <p className="payment-amount">Pay: ₹{event?.feeAmount || 0}</p>
               </div>
               
               <div className="upload-section">

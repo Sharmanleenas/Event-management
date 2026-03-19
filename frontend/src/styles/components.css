@@ -238,17 +238,62 @@
 /* ImageSlider Styles */
 .image-slider {
   width: 100%;
-  height: 450px;
+  height: 600px; /* Taller for drama */
   position: relative;
   overflow: hidden;
   background: var(--indigo);
+  perspective: 1500px; /* 3D Perspective */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .slide-container {
-  display: flex;
+  width: 80%; /* Shrink for 3D visibility */
+  height: 80%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s ease-in-out;
+  border-radius: 32px; /* Curved edges */
+  overflow: hidden;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  background: var(--white);
+  backface-visibility: hidden;
+}
+
+/* 3D States */
+.slide.active {
+  transform: translateZ(0) rotateY(0deg);
+  opacity: 1;
+  z-index: 2;
+}
+
+.slide.prev {
+  transform: translateZ(-200px) translateX(-50%) rotateY(25deg);
+  opacity: 0.5;
+  z-index: 1;
+  filter: blur(2px);
+}
+
+.slide.next {
+  transform: translateZ(-200px) translateX(50%) rotateY(-25deg);
+  opacity: 0.5;
+  z-index: 1;
+  filter: blur(2px);
+}
+
+.slide.hidden {
+  opacity: 0;
+  transform: translateZ(-400px) rotateY(45deg);
 }
 
 .slide {
@@ -262,19 +307,118 @@
   object-fit: cover;
 }
 
-.placeholder-slide {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--white);
+.image-slider.full-height {
+  height: 100vh;
+  background: #000;
 }
 
-.placeholder-slide h2 {
-  font-size: 3rem;
-  color: var(--white);
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+.slide-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  transition: transform 10s linear;
+}
+
+.slide.active .slide-bg {
+  animation: kenBurns 15s infinite alternate;
+}
+
+@keyframes kenBurns {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+
+.glassy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  z-index: 2;
+}
+
+.slide-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.slide-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 12px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+  animation: fadeUp 1s ease both;
+}
+
+.slide-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(4rem, 15vw, 10rem);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin: 0;
+  line-height: 0.9;
+  text-transform: uppercase;
+  animation: revealTitle 1.2s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+
+@keyframes revealTitle {
+  from { opacity: 0; transform: translateY(50px) skewY(5deg); filter: blur(10px); }
+  to { opacity: 1; transform: translateY(0) skewY(0); filter: blur(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 0.8; transform: translateY(0); }
+}
+
+.slide-details-row {
+  position: absolute;
+  bottom: 80px;
+  display: flex;
+  gap: 2rem;
+  animation: fadeUp 1s ease 0.5s both;
+}
+
+.glass-info-card {
+  padding: 1.5rem 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.glass-info-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+.info-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.info-value {
+  font-size: 0.75rem;
+  opacity: 0.6;
 }
 
 .slider-controls {

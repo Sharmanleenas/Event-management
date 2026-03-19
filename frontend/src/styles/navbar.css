@@ -12,6 +12,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 100% !important; /* Full width for 'light left/right' */
+  padding: 0 4rem;
 }
 
 .navbar-logo {
@@ -23,30 +25,37 @@
 .logo-text {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
-  font-size: 1.2rem;
-  line-height: 1.1;
+  font-size: 1.4rem; /* Smaller as requested */
+  line-height: 1;
   display: flex;
   flex-direction: column;
+  letter-spacing: -0.5px;
+  margin-left: 3rem; /* Increased for better visual spacing */
 }
 
 .logo-text span {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-family: 'DM Sans', sans-serif;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   color: var(--brass);
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
+  white-space: nowrap; /* Keep in straight line */
 }
 
 .nav-link {
   color: var(--white);
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.05rem;
   position: relative;
-  padding-bottom: 5px;
+  padding: 0.5rem 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-link {
@@ -60,6 +69,7 @@
 
 .nav-link:hover {
   color: var(--brass);
+  transform: translateY(-2px);
 }
 
 .nav-link::after {
@@ -151,8 +161,40 @@
 }
 
 .bell-icon {
-  font-size: 1.2rem;
+  font-size: 1.4rem; /* Slightly larger */
   color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.bell-emoji {
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.pop-anim .bell-icon {
+  animation: bellPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bellPop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.4) rotate(15deg); }
+  50% { transform: scale(1.4) rotate(-15deg); }
+  70% { transform: scale(1.4) rotate(15deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.pop-anim .unread-badge {
+  animation: badgePop 0.5s ease both;
+  background: #ff4d4d; /* More visible red */
+  color: white;
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
 
 .unread-badge {
@@ -170,17 +212,19 @@
 .notification-dropdown {
   position: absolute;
   right: 0;
-  top: 45px;
-  width: 320px;
+  top: 55px;
+  width: 380px; 
+  transform: translateX(-60px); 
   background: var(--white);
   color: var(--text-dark);
   z-index: 1001;
-  border-radius: 8px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
   border: 1px solid var(--linen);
   padding: 0;
   overflow: hidden;
-  animation: slideDown 0.3s ease;
+  white-space: normal; /* CRITICAL: Override parent nowrap */
+  animation: slideDown 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 @keyframes slideDown {
@@ -198,20 +242,25 @@
 }
 
 .notification-item {
-  padding: 1.2rem;
+  padding: 1.2rem 1.5rem;
   border-bottom: 1px solid var(--plaster);
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .notification-item p {
   margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--text-dark);
+  word-wrap: break-word; 
+  overflow-wrap: break-word;
+  white-space: normal; 
 }
 
 .notification-item.unread {
@@ -220,11 +269,30 @@
 }
 
 .notification-item:hover {
-  background: var(--plaster);
+  background: var(--brass);
+  color: var(--text-light);
 }
 
 .notification-time {
   font-size: 0.75rem;
   color: var(--text-light);
   font-weight: 600;
+}
+
+.view-all-link {
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--indigo);
+  background: #f4f2eb; /* Match linen slightly darker */
+  text-decoration: none;
+  transition: all 0.3s;
+  border-top: 1px solid var(--linen);
+}
+
+.view-all-link:hover {
+  background: var(--brass);
+  color: var(--indigo);
 }

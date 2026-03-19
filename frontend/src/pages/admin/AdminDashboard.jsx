@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import PendingEvents from './PendingEvents';
 import DepartmentView from './DepartmentView';
+import AdminMessages from './AdminMessages';
+import AdminNotifications from './AdminNotifications'; // [NEW]
 import useFetch from '../../utils/useFetch';
 import axiosInstance from '../../api/axiosInstance';
 import Loader from '../../components/Loader';
@@ -73,6 +75,8 @@ const AdminDashboard = () => {
           <Route index element={<AdminOverview />} />
           <Route path="pending" element={<PendingEvents />} />
           <Route path="departments" element={<DepartmentView />} />
+          <Route path="messages" element={<AdminMessages />} />
+          <Route path="notifications" element={<AdminNotifications />} />
         </Routes>
       </main>
     </div>
