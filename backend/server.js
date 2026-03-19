@@ -14,8 +14,7 @@ connectDB();
 const app = express();   // ✅ create app first
 
 // Create a log stream for debugging
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'server.log'), { flags: 'a' });
-app.use(morgan('combined', { stream: accessLogStream }));
+// No file logging
 app.use(morgan("dev"));  // ✅ now it works
 
 // Relaxed Rate Limiter for Dev/Testing

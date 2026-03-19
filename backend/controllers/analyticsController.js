@@ -59,7 +59,7 @@ exports.getAnalytics = async (req, res) => {
       maxCount,
     });
   } catch (error) {
-    require('fs').appendFileSync('server.log', `${new Date().toISOString()} - Analytics Error: ${error.message}\n`);
+    console.error(`Analytics Error: ${error.message}`);
     res.status(500).json({ message: error.message });
   }
 };
