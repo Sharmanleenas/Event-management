@@ -1,35 +1,20 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
-
-const connectDB = require("./config/db");
-const fs = require("fs");
 const path = require("path");
+const connectDB = require("./config/db");
 
 dotenv.config();
 connectDB();
 
-const app = express();   // ✅ create app first
+const app = express();
 
-// Create a log stream for debugging
-// No file logging
-app.use(morgan("dev"));  // ✅ now it works
-
-// Relaxed Rate Limiter for Dev/Testing
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 1000,
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-
-// app.use(limiter);
-
+app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 
+// API Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
@@ -43,9 +28,23 @@ app.use("/api/departments", require("./routes/departmentRoutes"));
 app.use("/api/staff", require("./routes/staffRoutes"));
 app.use("/api/sliders", require("./routes/sliderRoutes"));
 
+// Serve Frontend in Production
+if (process.env.NODE_ENV === "production") {
+  const rootDir = path.resolve();
+  const frontendPath = path.join(rootDir, "frontend", "dist");
+  
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.resolve(frontendPath, "index.html"));
+    }
+  });
+}
+
+// Error Handling
 const errorHandler = require("./middleware/errorMiddleware");
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`)
-);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
