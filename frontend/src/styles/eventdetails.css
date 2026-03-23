@@ -92,16 +92,25 @@
   margin-bottom: 1.5rem;
 }
 
-.fee-info {
+.fee-info-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed var(--linen);
+}
+
+.fee-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.2rem;
 }
 
+.fee-row span:first-child { font-size: 0.9rem; color: var(--text-mid); font-weight: 600; }
+
 .price {
-  font-size: 2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--burgundy);
   font-family: 'JetBrains Mono', monospace;
@@ -142,3 +151,34 @@
     font-size: 2rem;
   }
 }
+
+/* Sidebar Games List */
+.games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.game-mini-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.game-mini-card:hover { border-color: var(--burgundy); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+.game-mini-card.game-full { opacity: 0.7; }
+
+.game-name { margin: 0 0 0.5rem 0; color: var(--indigo); font-size: 1.1rem; }
+
+.game-tag-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.game-category-badge { background: #f1f5f9; color: #64748b; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+
+.slots-badge { background: #f0fdf4; color: #10b981; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; border: 1px solid #bbfcce; }
+
+.slots-badge.full { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
+
+.game-hint { margin-top: 0.5rem; font-size: 0.75rem; color: #94a3b8; line-height: 1.4; border-top: 1px dashed #e2e8f0; padding-top: 0.5rem; }

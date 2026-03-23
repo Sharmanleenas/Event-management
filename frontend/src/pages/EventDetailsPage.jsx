@@ -76,9 +76,15 @@ const EventDetailsPage = () => {
           </div>
 
           <div className="registration-cta card">
-            <div className="fee-info">
-              <span>Registration Fee:</span>
-              <span className="price">₹{event.feeAmount || 0}</span>
+            <div className="fee-info-stack">
+              <div className="fee-row">
+                <span>Internal (SHC)</span>
+                <span className="price">₹{event.internalPrice || 0}</span>
+              </div>
+              <div className="fee-row">
+                <span>External</span>
+                <span className="price">₹{event.externalPrice || 0}</span>
+              </div>
             </div>
             
             <button 
