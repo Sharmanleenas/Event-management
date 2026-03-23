@@ -1,2 +1,0 @@
-Testing Gemini API with model: gemini-2.5-flash
-SUCCESS! Response: This is a sample response generated to fulfill your request for a single sentence.

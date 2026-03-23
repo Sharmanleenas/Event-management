@@ -16,7 +16,7 @@ exports.generateIQACReport = async (req, res) => {
         return res.status(400).json({ message: "Event Title and Description are required." });
     }
 
-    console.log(`[IQAC] Generating Masterpiece Report for: ${title}`);
+    // console.log(`[IQAC] Generating Masterpiece Report for: ${title}`);
 
     const prompt = `
 Generate a professional, high-standard IQAC (Internal Quality Assurance Cell) report for an academic event.

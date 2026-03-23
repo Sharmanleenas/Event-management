@@ -7,19 +7,30 @@ import IQACForm from '../../components/iqac/IQACForm';
 import ReportPreview from '../../components/iqac/ReportPreview';
 import EditPanel from '../../components/iqac/EditPanel';
 import ExportButton from '../../components/iqac/ExportButton';
+import HeroHeader from '../../components/iqac/HeroHeader';
+import StatsCards from '../../components/iqac/StatsCards';
+import SearchBar from '../../components/iqac/SearchBar';
 import '../../styles/dashboard.css';
+import '../../styles/iqac_dashboard.css';
 
 const IQACReport = () => {
   const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [generatedReport, setGeneratedReport] = useState(null);
   const [headerData, setHeaderData] = useState(null);
   const [view, setView] = useState('selection'); // selection, split
+  const [searchQuery, setSearchQuery] = useState('');
+  const [deptFilter, setDeptFilter] = useState('All');
 
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    filterEvents();
+  }, [events, searchQuery, deptFilter]);
 
   const fetchEvents = async () => {
     try {
@@ -32,6 +43,18 @@ const IQACReport = () => {
     }
   };
 
+  const filterEvents = () => {
+    let filtered = events.filter(ev => 
+      ev.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (deptFilter !== 'All') {
+      filtered = filtered.filter(ev => ev.department === deptFilter);
+    }
+
+    setFilteredEvents(filtered);
+  };
+
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
     setView('split');
@@ -42,70 +65,106 @@ const IQACReport = () => {
     setHeaderData(meta);
   };
 
+  // Derived stats
+  const totalEventsCount = events.length;
+  const reportsGeneratedCount = events.filter(e => e.iqacStatus === 'Completed' || e.isReportGenerated).length;
+  const pendingReportsCount = totalEventsCount - reportsGeneratedCount;
+
   if (loading) return <Loader />;
 
   if (view === 'selection') {
     return (
-      <div className="dashboard-content anim-fade-in">
-        <h2 className="dash-title">IQAC Report Module</h2>
-        <p className="dash-subtitle">Select an event to generate its academic compliance report.</p>
+      <div className="iqac-dashboard-container">
+        <HeroHeader />
+        
+        <StatsCards 
+          totalEvents={totalEventsCount} 
+          reportsGenerated={reportsGeneratedCount} 
+          pendingReports={pendingReportsCount} 
+        />
 
-        <div className="iqac-event-grid">
-          {events.length > 0 ? (
-            events.map(event => (
+        <SearchBar 
+          onSearch={setSearchQuery} 
+          onFilter={setDeptFilter} 
+          selectedDept={deptFilter} 
+        />
+
+        {filteredEvents.length > 0 ? (
+          <div className="event-grid-new">
+            {filteredEvents.map(event => (
               <EventCard 
                 key={event._id} 
                 event={event} 
                 onClick={() => handleSelectEvent(event)} 
               />
-            ))
-          ) : (
-            <p className="no-events text-muted">No department events found.</p>
-          )}
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state-container anim-fade-in-up">
+            <div className="empty-illustration">📅</div>
+            <h3>No events available</h3>
+            <p>We couldn't find any events matching your criteria. Try adjusting your search or filters.</p>
+            <button className="btn-generate-premium" onClick={() => {
+              setSearchQuery('');
+              setDeptFilter('All');
+            }}>
+              Reset Filters
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (generatedReport) {
+    return (
+      <div className="refinement-stage-layout anim-fade-in">
+        <div className="iqac-top-bar" style={{ position: 'fixed', top: '1rem', left: '1rem', zIndex: 1000 }}>
+            <button className="btn-back" onClick={() => setGeneratedReport(null)}>← Back to Editor</button>
+        </div>
+
+        <div className="report-scroll-column">
+             <ReportPreview 
+                report={generatedReport} 
+                headerData={headerData || selectedEvent} 
+            />
+        </div>
+
+        <div className="refinement-sticky-sidebar">
+            <EditPanel 
+                report={generatedReport} 
+                onUpdate={setGeneratedReport} 
+            />
+            <div style={{ marginTop: '1.5rem' }}>
+                <ExportButton 
+                    report={generatedReport} 
+                    headerData={headerData || selectedEvent} 
+                />
+            </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-content anim-fade-in">
-        <div className="iqac-top-bar">
+    <div className="iqac-editor-container anim-fade-in">
+        <div className="iqac-top-bar" style={{ position: 'fixed', top: '1rem', left: '1rem', zIndex: 1000 }}>
             <button className="btn-back" onClick={() => setView('selection')}>← Back to Events</button>
-            <h2 className="dash-title">Drafting Report: {selectedEvent?.title}</h2>
         </div>
 
-        <div className="iqac-split-viewport">
-            {/* Left Column: Form */}
-            <div className="iqac-left-form-scroller">
-                <IQACForm 
-                  selectedEvent={selectedEvent} 
-                  onGenerate={handleReportGenerated} 
+        {/* Left Side: Editor */}
+        <IQACForm 
+            selectedEvent={selectedEvent} 
+            onGenerate={handleReportGenerated} 
+        />
+        
+        {/* Right Side: Live Preview */}
+        <div className="live-preview-panel">
+            <div className="preview-scroll-wrapper" style={{ width: '100%' }}>
+                <ReportPreview 
+                    report={generatedReport} 
+                    headerData={headerData || selectedEvent} 
                 />
-            </div>
-            
-            {/* Right Column: Preview & Refinement */}
-            <div className="iqac-right-preview-fixed">
-                <div className="preview-scroll-wrapper">
-                    <ReportPreview 
-                      report={generatedReport} 
-                      headerData={headerData || selectedEvent} 
-                    />
-                    
-                    {generatedReport && (
-                      <div className="refinement-controls-wrapper anim-slide-up">
-                        <EditPanel 
-                          report={generatedReport} 
-                          onUpdate={setGeneratedReport} 
-                        />
-                        <div className="export-row pad-v-10">
-                            <ExportButton 
-                              report={generatedReport} 
-                              headerData={headerData || selectedEvent} 
-                            />
-                        </div>
-                      </div>
-                    )}
-                </div>
             </div>
         </div>
     </div>

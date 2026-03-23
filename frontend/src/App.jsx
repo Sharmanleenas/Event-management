@@ -18,6 +18,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const HODDashboard = lazy(() => import('./pages/hod/HODDashboard'));
 const LeaderDashboard = lazy(() => import('./pages/leader/LeaderDashboard'));
+const StaffDashboard = lazy(() => import('./pages/staff/StaffDashboard'));
 
 const Unauthorized = () => (
   <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -55,6 +56,11 @@ const App = () => {
                 {/* Leader Routes */}
                 <Route element={<ProtectedRoute allowedRoles={['LEADER']} />}>
                   <Route path="/leader/*" element={<LeaderDashboard />} />
+                </Route>
+
+                {/* Staff Routes */}
+                <Route element={<ProtectedRoute allowedRoles={['STAFF']} />}>
+                  <Route path="/staff/*" element={<StaffDashboard />} />
                 </Route>
 
                 {/* Fallback */}

@@ -4,7 +4,7 @@ import '../styles/components.css';
 const ImageSlider = ({ images = [], fullHeight = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Fallback gradients if no images are provided
+  // Fallback gradients if no images provided from DB
   const placeholders = [
     { 
       id: 1, 
@@ -30,11 +30,12 @@ const ImageSlider = ({ images = [], fullHeight = false }) => {
   ];
 
   const slides = images.length > 0 ? images : placeholders;
+  const isDynamic = images.length > 0;
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -47,26 +48,29 @@ const ImageSlider = ({ images = [], fullHeight = false }) => {
           else if (index === (currentIndex - 1 + slides.length) % slides.length) position = "prev";
           else if (index === (currentIndex + 1) % slides.length) position = "next";
 
+          const bgStyle = isDynamic
+            ? { backgroundImage: `url(${slide.url || slide.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+            : { background: slide.color, backgroundSize: 'cover', backgroundPosition: 'center' };
+
           return (
             <div key={slide.id || index} className={`slide ${position}`}>
-              <div 
-                className="slide-bg" 
-                style={{ background: slide.url ? `url(${slide.url})` : slide.color, backgroundSize: 'cover', backgroundPosition: 'center' }}
-              ></div>
+              <div className="slide-bg" style={bgStyle}></div>
               <div className="glassy-overlay"></div>
               
               <div className="slide-content">
-                <span className="slide-subtitle">{slide.subtitle}</span>
-                <h1 className="slide-title">{slide.title}</h1>
+                {slide.subtitle && <span className="slide-subtitle">{slide.subtitle}</span>}
+                {slide.title && <h1 className="slide-title">{slide.title}</h1>}
                 
-                <div className="slide-details-row">
-                  {slide.details?.map((detail, idx) => (
-                    <div key={idx} className="glass-info-card">
-                      <span className="info-label">{detail}</span>
-                      <span className="info-value">Plan a trip</span>
-                    </div>
-                  ))}
-                </div>
+                {slide.details && (
+                  <div className="slide-details-row">
+                    {slide.details.map((detail, idx) => (
+                      <div key={idx} className="glass-info-card">
+                        <span className="info-label">{detail}</span>
+                        <span className="info-value">Plan a trip</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );

@@ -17,16 +17,17 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const data = await loginApi({ email, password });
+      const data = await loginApi({ email: email.trim(), password });
       // The backend now returns { user, token }
       login(data.user, data.token);
       toast.success('Login Successful!');
       
       // Redirect based on role
-      const role = data.user.role;
-      if (role === 'ADMIN') navigate('/admin');
-      else if (role === 'HOD') navigate('/hod');
-      else if (role === 'LEADER') navigate('/leader');
+      const normalizedRole = data.user.role.toUpperCase();
+      if (normalizedRole === 'ADMIN') navigate('/admin');
+      else if (normalizedRole === 'HOD') navigate('/hod');
+      else if (normalizedRole === 'LEADER') navigate('/leader');
+      else if (normalizedRole === 'STAFF') navigate('/staff');
       else navigate('/');
       
     } catch (err) {

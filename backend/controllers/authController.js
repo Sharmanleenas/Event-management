@@ -30,7 +30,8 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email: rawEmail, password } = req.body;
+    const email = rawEmail.trim();
     // Search for user with case-insensitive email
     const user = await User.findOne({ 
       email: { $regex: new RegExp(`^${email}$`, 'i') } 

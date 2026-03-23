@@ -12,7 +12,8 @@ const Navbar = () => {
 
   const isDashboard = location.pathname.startsWith('/admin') || 
                       location.pathname.startsWith('/hod') || 
-                      location.pathname.startsWith('/leader');
+                      location.pathname.startsWith('/leader') ||
+                      location.pathname.startsWith('/staff');
 
   const handleLogout = () => {
     logout();
@@ -21,6 +22,15 @@ const Navbar = () => {
   };
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const getDashboardLink = () => {
+    const r = role?.toUpperCase();
+    if (r === 'ADMIN') return '/admin';
+    if (r === 'HOD') return '/hod';
+    if (r === 'LEADER') return '/leader';
+    if (r === 'STAFF') return '/staff';
+    return '/';
+  };
 
   return (
     <nav className="navbar">
@@ -42,7 +52,8 @@ const Navbar = () => {
                   setIsOpen(false);
                   navigate('/');
                   setTimeout(() => {
-                    document.getElementById('events-section')?.scrollIntoView({ behavior: 'smooth' });
+                    const el = document.getElementById('events-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }, 100);
                 }}
               >
@@ -59,7 +70,8 @@ const Navbar = () => {
                   } else {
                     navigate('/');
                     setTimeout(() => {
-                      document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' });
+                      const el = document.getElementById('contact-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                   }
                 }}
@@ -72,7 +84,7 @@ const Navbar = () => {
           {user ? (
             <>
               <Link 
-                to={role?.toUpperCase() === 'ADMIN' ? '/admin' : role?.toUpperCase() === 'HOD' ? '/hod' : '/leader'} 
+                to={getDashboardLink()} 
                 className="nav-link"
                 onClick={() => setIsOpen(false)}
               >

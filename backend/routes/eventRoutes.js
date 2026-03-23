@@ -34,6 +34,7 @@ router.post("/comment/:id", protect, addComment);
 router.post("/rule/:id", protect, addRule);
 
 // Protected routes - Management
+router.get("/pending", protect, authorizeRoles("ADMIN"), getPendingEvents);
 router.put("/approve/:id", protect, authorizeRoles("ADMIN"), approveEvent);
 router.put("/reject/:id", protect, authorizeRoles("ADMIN"), rejectEvent);
 router.put("/toggle-registration/:id", protect, toggleRegistration);

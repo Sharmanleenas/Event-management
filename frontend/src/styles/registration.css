@@ -183,4 +183,134 @@
   .form-row, .payment-layout {
     grid-template-columns: 1fr;
   }
+  .step-header-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+/* ---- Step Header Row (Title + Toggle) ---- */
+.step-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.step-header-row h2 { margin: 0; }
+
+/* ---- Pill Toggle ---- */
+.ct-toggle-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; }
+
+.ct-pill-toggle {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 24px;
+  padding: 3px;
+  gap: 0;
+}
+
+.ct-pill {
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  background: transparent;
+  color: #475569;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.ct-pill:hover { color: #1e293b; }
+
+.ct-pill.ct-active {
+  background: #7b1123;
+  color: white;
+  box-shadow: 0 2px 8px rgba(123, 17, 35, 0.3);
+}
+
+.ct-helper {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin: 0;
+  text-align: right;
+}
+
+/* ---- Auto-detect Badge ---- */
+.ct-auto-badge {
+  display: flex;
+  align-items: center;
+}
+
+.ct-auto-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+/* ---- Conditional Field Animation ---- */
+.cond-field-enter {
+  animation: condSlideIn 0.35s ease-out;
+}
+
+@keyframes condSlideIn {
+  from { opacity: 0; transform: translateY(-8px); max-height: 0; }
+  to   { opacity: 1; transform: translateY(0);    max-height: 120px; }
+}
+
+/* ---- Required Dot ---- */
+.required-dot {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* ---- Fee Display Bar ---- */
+.fee-display-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.fee-display-bar span { font-size: 0.9rem; color: #64748b; }
+
+.fee-display-bar strong {
+  font-size: 1.5rem;
+  color: var(--indigo);
+}
+
+.discount-badge {
+  font-size: 0.75rem !important;
+  font-weight: 700;
+  background: #10b981;
+  color: white !important;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.standard-badge {
+  font-size: 0.75rem !important;
+  font-weight: 700;
+  background: #f59e0b;
+  color: white !important;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.fee-warning {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .ct-toggle-wrap { align-items: flex-start; }
 }

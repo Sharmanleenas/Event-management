@@ -8,19 +8,32 @@ const cloudinary = require("../config/cloudinary");
 
 exports.registerParticipant = async (req, res) => {
   try {
-    const { name, email, phone, eventId, registerNumber, department, college, selectedGames } = req.body;
+    const { name, email, phone, eventId, registerNumber, department, college, selectedGames, collegeType: requestedType } = req.body;
     const event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ message: "Event not found" });
     if (event.status !== "APPROVED") {
       return res.status(400).json({ message: "Event not available" });
     }
 
+    // Auto-detect internal students via email domain
+    const isInternalEmail = email && email.toLowerCase().endsWith('@shctpt.edu');
+    const collegeType = isInternalEmail ? 'internal' : (requestedType || 'internal');
+
+    // Server-side price calculation — NEVER trust frontend price
+    const amount = collegeType === 'internal'
+      ? (event.internalPrice || 0)
+      : (event.externalPrice || 0);
+
+    const participantCollege = collegeType === 'internal'
+      ? 'Sacred Heart College'
+      : (college || 'Unknown');
+
     const participantId = await generateParticipantId(
       eventId,
       event.participantIdPrefix
     );
 
-    const qrData = `upi://pay?pa=${event.upiId}&pn=SHC EVENT&am=${event.amount}`;
+    const qrData = `upi://pay?pa=${event.upiId}&pn=SHC EVENT&am=${amount}&cu=INR`;
     const qrImage = await QRCode.toDataURL(qrData);
 
     const participant = await Participant.create({
@@ -31,7 +44,9 @@ exports.registerParticipant = async (req, res) => {
       eventId,
       registerNumber,
       department,
-      college: college || "Sacred Heart College",
+      college: participantCollege,
+      collegeType,
+      amount,
       selectedGames: selectedGames || []
     });
 
@@ -62,7 +77,7 @@ exports.registerParticipant = async (req, res) => {
               </div>
               <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;" />
               <h3 style="text-align: center; color: #333; margin-top: 0;">Complete Your Payment</h3>
-              <p style="text-align: center; font-size: 15px; color: #555;">Please scan the QR code below to pay <b>₹${event.amount}</b>.</p>
+              <p style="text-align: center; font-size: 15px; color: #555;">Please scan the QR code below to pay <b>₹${amount}</b>.</p>
               <div style="text-align: center; margin: 20px 0;">
                 <img src="cid:qrcode" alt="Payment QR Code" style="width: 220px; height: 220px; border: 4px solid #f4f6f8; border-radius: 12px;" />
               </div>
@@ -90,6 +105,8 @@ exports.registerParticipant = async (req, res) => {
       participantId,
       _id: participant._id,
       qrImage,
+      amount,
+      collegeType,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -124,15 +141,20 @@ exports.verifyPayment = async (req, res) => {
     if (!participant) {
       return res.status(404).json({ message: "Participant not found" });
     }
-    if (!participant.paymentScreenshot) {
-      return res.status(400).json({ message: "No payment proof uploaded" });
+
+    // Normalize status to match Mongoose enum: APPROVED / REJECTED / PENDING
+    const rawStatus = req.body.status || '';
+    const status = rawStatus.toUpperCase();
+
+    if (!['APPROVED', 'REJECTED', 'PENDING'].includes(status)) {
+      return res.status(400).json({ message: `Invalid status: ${rawStatus}` });
     }
 
-    participant.paymentStatus = req.body.status;
+    participant.paymentStatus = status;
     participant.verifiedBy = req.user._id;
     await participant.save();
 
-    res.json({ message: "Payment Verified Successfully" });
+    res.json({ message: "Payment status updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

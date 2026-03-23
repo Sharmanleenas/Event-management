@@ -13,6 +13,8 @@ const participantSchema = new mongoose.Schema(
     registerNumber: String,
     department: String,
     college: { type: String, default: "Sacred Heart College" },
+    collegeType: { type: String, enum: ['internal', 'external'], default: 'internal' },
+    amount: { type: Number, default: 0 },
     selectedGames: [String],
     paymentScreenshot: String,
     paymentStatus: {

@@ -40,6 +40,8 @@ app.use("/api/certificate", require("./routes/certificateRoutes"));
 app.use("/api/iqac", require("./routes/iqacRoutes"));
 app.use("/api/contacts", require("./routes/contactRoutes"));
 app.use("/api/departments", require("./routes/departmentRoutes"));
+app.use("/api/staff", require("./routes/staffRoutes"));
+app.use("/api/sliders", require("./routes/sliderRoutes"));
 
 const errorHandler = require("./middleware/errorMiddleware");
 app.use(errorHandler);

@@ -3,6 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 import { toast } from 'react-toastify';
 import useFetch from '../utils/useFetch';
 import { getPublicEvents } from '../api/eventsApi';
+import sliderApi from '../api/sliderApi';
 import ImageSlider from '../components/ImageSlider';
 import EventCard from '../components/EventCard';
 import Loader from '../components/Loader';
@@ -10,14 +11,20 @@ import '../styles/landing.css';
 
 const LandingPage = () => {
   const { data: events, loading: eventsLoading } = useFetch(getPublicEvents);
+  const { data: sliders } = useFetch(() => sliderApi.getAll(true));
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Map DB slider shape -> ImageSlider shape
+  const dynamicSlides = sliders?.length > 0
+    ? sliders.map(s => ({ id: s._id, url: s.imageUrl, title: s.title || '', subtitle: '' }))
+    : [];
 
   return (
     <div className="landing-page">
       <div className="background-liquid"></div>
       
       <section className="hero-section">
-        <ImageSlider fullHeight={true} />
+        <ImageSlider images={dynamicSlides} fullHeight={true} />
       </section>
 
       <section id="events-section" className="events-section container">

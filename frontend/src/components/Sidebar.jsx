@@ -15,6 +15,7 @@ const Sidebar = () => {
           { path: '/admin/departments', label: 'Departments', icon: '🏢' },
           { path: '/admin/messages', label: 'Messages', icon: '📩' },
           { path: '/admin/notifications', label: 'Notifications', icon: '🔔' },
+          { path: '/admin/sliders', label: 'Slider Management', icon: '🖼️' },
         ];
       case 'HOD':
         return [
@@ -28,6 +29,12 @@ const Sidebar = () => {
           { path: '/leader', label: 'My Games', icon: '🎮' },
           { path: '/leader/verify-payments', label: 'Verify Payments', icon: '💰' },
           { path: '/leader/notifications', label: 'Notifications', icon: '🔔' },
+        ];
+      case 'STAFF':
+        return [
+          { path: '/staff', label: 'Dashboard', icon: '📊' },
+          { path: '/staff/events', label: 'Assigned Events', icon: '📋' },
+          { path: '/staff/notifications', label: 'Notifications', icon: '🔔' },
         ];
       default:
         return [];

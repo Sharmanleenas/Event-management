@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import CreateEvent from './CreateEvent';
 import EditEvent from './EditEvent';
@@ -9,9 +9,12 @@ import CreateLeader from './CreateLeader';
 import useFetch from '../../utils/useFetch';
 import axiosInstance from '../../api/axiosInstance';
 import Loader from '../../components/Loader';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../../styles/dashboard.css';
 
 const HODOverview = () => {
+  const navigate = useNavigate();
   const { data: myEvents, loading, execute: fetchMyEvents } = useFetch(() => axiosInstance.get('/api/events/my-events').then(res => res.data));
 
   const handleToggleRegistration = async (id) => {

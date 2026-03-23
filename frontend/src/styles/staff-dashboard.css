@@ -1,0 +1,349 @@
+/* ============================================================
+   Staff Dashboard — Modern SaaS Redesign
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ---- Page Shell ---- */
+.staff-overview {
+  padding: 0;
+  background: #f6f7fb;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ---- Welcome Header ---- */
+.staff-welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.25rem 2.5rem 1.75rem;
+  background: white;
+  border-bottom: 1px solid #eef0f6;
+}
+
+.swh-left h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  color: #1a1a2e;
+  margin: 0;
+  font-weight: 700;
+}
+
+.swh-greeting {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0 0 0.25rem;
+  font-weight: 400;
+}
+
+.swh-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.swh-date {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.swh-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+}
+
+/* ---- Stats Strip ---- */
+.staff-stats-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0 2.5rem;
+  background: white;
+  border-bottom: 1px solid #eef0f6;
+}
+
+.stat-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem 1.5rem 0;
+  margin-right: 2.5rem;
+  border-right: 1px solid #f1f5f9;
+  cursor: default;
+  transition: background 0.2s;
+}
+
+.stat-strip-item:last-child {
+  border-right: none;
+}
+
+.stat-strip-item:hover { background: #f8faff; border-radius: 8px; }
+
+.ssi-icon {
+  font-size: 1.6rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.ssi-icon.blue   { background: #eff6ff; }
+.ssi-icon.yellow { background: #fffbeb; }
+.ssi-icon.green  { background: #f0fdf4; }
+
+.ssi-info { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.ssi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.ssi-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ---- Body ---- */
+.staff-body {
+  padding: 2rem 2.5rem;
+}
+
+/* ---- Section Header ---- */
+.staff-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.staff-section-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.staff-view-all {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7c3aed;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e9d5ff;
+  background: white;
+  transition: all 0.2s;
+}
+
+.staff-view-all:hover {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+
+/* ---- Event Cards Grid ---- */
+.staff-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ---- Modern Event Card ---- */
+.sev-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.sev-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sev-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
+  border-color: #e9d5ff;
+}
+
+.sev-card:hover::before { opacity: 1; }
+
+/* Card Top */
+.sev-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.sev-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+  padding-right: 0.75rem;
+}
+
+/* Status Badges */
+.sev-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sev-status.in-progress { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.sev-status.completed   { background: #f0fdf4; color: #065f46; border: 1px solid #a7f3d0; }
+.sev-status.pending     { background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
+.sev-status.submitted   { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+/* Card Meta */
+.sev-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.sev-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.sev-meta-item span:first-child { font-size: 1rem; }
+
+/* Progress Bar */
+.sev-progress-section {
+  margin-bottom: 1.25rem;
+}
+
+.sev-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.sev-progress-header span {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.sev-progress-header strong {
+  font-size: 0.75rem;
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+.sev-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.sev-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  animation: barFill 0.8s ease-out forwards;
+  transform-origin: left;
+}
+
+@keyframes barFill {
+  from { width: 0 !important; }
+  to   { /* width is set inline */ }
+}
+
+/* Card Action */
+.sev-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sev-open-btn {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sev-open-btn:hover {
+  background: linear-gradient(135deg, #6d28d9, #4338ca);
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+/* ---- Empty State ---- */
+.staff-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.staff-empty-state .empty-illustration { font-size: 4rem; }
+.staff-empty-state h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: #1a1a2e;
+  margin: 0;
+}
+.staff-empty-state p { color: #94a3b8; font-size: 0.95rem; margin: 0; }
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .staff-welcome-header { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.5rem; }
+  .staff-stats-strip { flex-wrap: wrap; padding: 0 1rem; }
+  .stat-strip-item { border-right: none; padding: 1rem 0; margin-right: 0; width: 50%; }
+  .staff-body { padding: 1.5rem 1rem; }
+  .staff-events-grid { grid-template-columns: 1fr; }
+}

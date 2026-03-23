@@ -5,6 +5,7 @@ import PendingEvents from './PendingEvents';
 import DepartmentView from './DepartmentView';
 import AdminMessages from './AdminMessages';
 import AdminNotifications from './AdminNotifications'; // [NEW]
+import SliderManagement from './SliderManagement';      // [NEW]
 import useFetch from '../../utils/useFetch';
 import axiosInstance from '../../api/axiosInstance';
 import Loader from '../../components/Loader';
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
           <Route path="departments" element={<DepartmentView />} />
           <Route path="messages" element={<AdminMessages />} />
           <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="sliders" element={<SliderManagement />} />
         </Routes>
       </main>
     </div>

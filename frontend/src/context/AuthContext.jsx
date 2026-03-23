@@ -1,26 +1,19 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [role, setRole] = useState(localStorage.getItem('role'));
-  const [loading, setLoading] = useState(true);
-
-  // Persistence: Check for user on refresh if token exists
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedRole = localStorage.getItem('role');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedRole) {
-      setToken(storedToken);
-      setRole(storedRole.toUpperCase());
-      setUser(JSON.parse(storedUser));
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [role, setRole] = useState(() => localStorage.getItem('role')?.toUpperCase() || null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (e) {
+      return null;
     }
-    setLoading(false);
-  }, []);
+  });
+  const [loading, setLoading] = useState(false);
 
   const login = (userData, authToken) => {
     const normalizedRole = userData.role.toUpperCase();

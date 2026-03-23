@@ -10,7 +10,7 @@ exports.createEvent = async (req, res) => {
       return res.status(403).json({ message: "Access Denied" });
     }
 
-    const { title, description, upiId, feeAmount, participantIdPrefix, rules, parentEvent, date, venue, games, maxGamesPerParticipant } = req.body;
+    const { title, description, upiId, internalPrice, externalPrice, participantIdPrefix, rules, parentEvent, date, venue, games, maxGamesPerParticipant } = req.body;
 
     const event = await Event.create({
       title,
@@ -18,7 +18,8 @@ exports.createEvent = async (req, res) => {
       department: req.user.department,
       createdBy: req.user._id,
       upiId,
-      feeAmount: feeAmount || 0,
+      internalPrice: internalPrice || 0,
+      externalPrice: externalPrice || 0,
       participantIdPrefix,
       status: userRole === "ADMIN" ? "APPROVED" : "PENDING",
       rules,
@@ -38,7 +39,7 @@ exports.createEvent = async (req, res) => {
         message: `${req.user.department} department submitted "${title}" for approval.`,
       }));
       await Notification.insertMany(notifications);
-      console.log(`Created ${notifications.length} notifications for admins.`);
+      // console.log(`Created ${notifications.length} notifications for admins.`);
     }
 
     res.status(201).json(event);
@@ -160,7 +161,7 @@ exports.getApprovedEvents = async (req, res) => {
 
 exports.markEventCompleted = async (req, res) => {
   try {
-    console.log(req.user);
+    // console.log(req.user);
     if (req.user.role !== "ADMIN" && req.user.role !== "HOD") {
       return res.status(403).json({ message: "Access Denied" });
     }
@@ -228,8 +229,11 @@ exports.toggleRegistration = async (req, res) => {
     if (!event) return res.status(404).json({ message: "Event not found" });
 
     const userRole = req.user.role?.toUpperCase();
-    if (event.createdBy.toString() !== req.user._id.toString() && userRole !== "ADMIN") {
-      return res.status(403).json({ message: "Unauthorized" });
+    const isOwner = event.createdBy?.toString() === req.user._id.toString();
+    const isDeptHOD = req.user.role === "HOD" && req.user.department === event.department;
+
+    if (!isOwner && !isDeptHOD && userRole !== "ADMIN") {
+      return res.status(403).json({ message: "Unauthorized to manage this event" });
     }
 
     event.isRegistrationOpen = !event.isRegistrationOpen;

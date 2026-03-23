@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../api/axiosInstance';
-import '../../styles/dashboard.css';
+import '../../styles/iqac_editor.css';
 
 const EditPanel = ({ report, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,7 +21,7 @@ const EditPanel = ({ report, onUpdate }) => {
 
     try {
       const { data } = await axiosInstance.post('/api/iqac/modify', {
-        currentReport: editedContent,
+        currentReport: report,
         instruction: aiInstruction
       });
       onUpdate(data.report);
@@ -36,50 +36,48 @@ const EditPanel = ({ report, onUpdate }) => {
   };
 
   return (
-    <div className="post-generation-controls anim-slide-up">
-      <div className="panel-header">
-        <h3 className="section-title">✨ Final Refinement</h3>
-        <button 
-          className={`btn-sm ${isEditing ? 'btn-success' : 'btn-secondary'}`} 
-          onClick={() => isEditing ? handleManualSave() : setIsEditing(true)}
-        >
-          {isEditing ? '💾 Save Changes' : '✏️ Manual Edit'}
-        </button>
-      </div>
+    <div className="refinement-card anim-slide-up">
+      <h3>✨ Final Refinement</h3>
+      
+      <button 
+        className="btn-manual-edit-new"
+        onClick={() => isEditing ? handleManualSave() : setIsEditing(true)}
+      >
+        {isEditing ? '💾 Save Changes' : '✏️ Manual Edit'}
+      </button>
 
-      <div className="manual-edit-area">
-        {isEditing ? (
-          <div>
-            <p className="edit-hint">You are in edit mode. Modify the text below and click save.</p>
-            <textarea 
-              className="manual-editor" 
-              rows="15" 
-              value={editedContent} 
-              onChange={e => setEditedContent(e.target.value)} 
-            />
-          </div>
-        ) : (
-          <p className="edit-indicator">✅ Report draft is ready. You can manually edit or use AI below to refine.</p>
-        )}
-      </div>
-
-      <div className="ai-refine-box shadow-indigo">
-        <label>🪄 Refine with Gemini AI</label>
-        <div className="refine-row">
-          <input 
-            type="text" 
-            placeholder="e.g. 'Make it more professional', 'Expand the outcome section'..." 
-            value={aiInstruction} 
-            onChange={e => setAiInstruction(e.target.value)} 
+      {isEditing ? (
+        <div style={{ marginBottom: '1.5rem' }}>
+          <textarea 
+            className="refinement-input"
+            rows="10"
+            style={{ height: '300px', resize: 'vertical' }}
+            value={editedContent} 
+            onChange={e => setEditedContent(e.target.value)} 
           />
-          <button 
-            className="btn-primary btn-sm refine-btn" 
-            onClick={handleAIRefine}
-            disabled={loading}
-          >
-            {loading ? <span className="spinner"></span> : 'Apply AI Magic 🚀'}
-          </button>
         </div>
+      ) : (
+        <div className="refinement-status">
+          ✅ Report draft is ready. You can manually edit or use AI below to refine.
+        </div>
+      )}
+
+      <div className="refinement-ai-box">
+        <label>🪄 Refine with Gemini AI</label>
+        <input 
+          type="text" 
+          className="refinement-input"
+          placeholder="e.g. 'Make it more formal'" 
+          value={aiInstruction} 
+          onChange={e => setAiInstruction(e.target.value)} 
+        />
+        <button 
+          className="btn-refine-action" 
+          onClick={handleAIRefine}
+          disabled={loading}
+        >
+          {loading ? <span className="loading-spinner"></span> : 'Apply AI Magic'}
+        </button>
       </div>
     </div>
   );

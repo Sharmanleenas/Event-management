@@ -10,7 +10,8 @@ const eventSchema = new mongoose.Schema(
       ref: "User",
     },
     upiId: String,
-    feeAmount: { type: Number, default: 0 },
+    internalPrice: { type: Number, default: 0 },
+    externalPrice: { type: Number, default: 0 },
     maxGamesPerParticipant: { type: Number, default: 3 },
     games: [
       {
@@ -47,6 +48,18 @@ const eventSchema = new mongoose.Schema(
         createdAt: { type: Date, default: Date.now },
       },
     ],
+    // Staff Portal Fields
+    assignedStaff: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    staffStatus: { type: String, enum: ["PENDING", "IN_PROGRESS", "COMPLETED"], default: "PENDING" },
+    duration: { type: String, default: "" },
+    staffNotes: { type: String, default: "" },
+    documents: {
+      invitation: { type: String, default: "" },
+      profile: { type: String, default: "" },
+      attendance: { type: String, default: "" },
+      feedback: { type: String, default: "" },
+      photos: { type: [String], default: [] }
+    }
   },
   { timestamps: true },
 );

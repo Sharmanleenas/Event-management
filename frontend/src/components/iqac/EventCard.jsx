@@ -1,23 +1,35 @@
 import React from 'react';
-import '../../styles/dashboard.css';
+import '../../styles/iqac_dashboard.css';
 
 const EventCard = ({ event, onClick }) => {
-  const { title, poster } = event;
+  const { title, department, date, _id } = event;
+  const firstLetter = title?.charAt(0) || 'E';
+  
+  // Format the date if it's available
+  const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }) : 'No Date Set';
 
   return (
-    <div className="iqac-event-card card glass-card" onClick={onClick}>
-      <div className="card-thumb">
-        {poster ? (
-          <img src={poster} alt={title} className="thumb-img" />
-        ) : (
-          <div className="thumb-placeholder">{title.charAt(0)}</div>
-        )}
-      </div>
-      <div className="card-info">
-        <h4>{title}</h4>
-      </div>
-      <div className="card-hover-overlay">
-        Generate IQAC Report →
+    <div className="event-card-new anim-fade-in-up" onClick={onClick}>
+      <div className="card-top-accent"></div>
+      <div className="event-card-body">
+        <div className="card-meta">
+          <span className="dept-badge-new">{department || 'CSE'}</span>
+          <span className="event-date-new">📅 {formattedDate}</span>
+        </div>
+        <h3 className="event-card-title">{title}</h3>
+        <div className="card-footer-new">
+          <div className="event-avatar">{firstLetter}</div>
+          <button className="btn-generate-premium" onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}>
+            Generate Report
+          </button>
+        </div>
       </div>
     </div>
   );

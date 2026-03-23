@@ -14,7 +14,8 @@ const CreateEvent = () => {
     date: '',
     venue: '',
     department: '',
-    feeAmount: '',
+    internalPrice: '',
+    externalPrice: '',
     upiId: '',
     maxGamesPerParticipant: 3,
     games: [
@@ -93,13 +94,17 @@ const CreateEvent = () => {
           <h3>Payment & Coordination</h3>
           <div className="form-row">
             <div className="form-group">
-              <label>Fee Amount (₹)</label>
-              <input type="number" name="feeAmount" value={eventData.feeAmount} onChange={handleChange} required />
+              <label>Internal Fee (₹) — SHC Students</label>
+              <input type="number" name="internalPrice" value={eventData.internalPrice} onChange={handleChange} min="0" required />
             </div>
             <div className="form-group">
-              <label>UPI ID (to receive payments)</label>
-              <input name="upiId" value={eventData.upiId} onChange={handleChange} placeholder="collge@upi" required />
+              <label>External Fee (₹) — Other Colleges</label>
+              <input type="number" name="externalPrice" value={eventData.externalPrice} onChange={handleChange} min="0" required />
             </div>
+          </div>
+          <div className="form-group">
+            <label>UPI ID (to receive payments)</label>
+            <input name="upiId" value={eventData.upiId} onChange={handleChange} placeholder="college@upi" required />
           </div>
           <div className="form-group">
             <label>Max Games Per Participant</label>
