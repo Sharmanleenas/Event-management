@@ -29,15 +29,28 @@ app.use("/api/staff", require("./routes/staffRoutes"));
 app.use("/api/sliders", require("./routes/sliderRoutes"));
 
 // Serve Frontend in Production
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" || process.env.RENDER) {
   const rootDir = path.resolve();
   const frontendPath = path.join(rootDir, "frontend", "dist");
   
+  console.log(`[Production] Serving static files from: ${frontendPath}`);
+  
   app.use(express.static(frontendPath));
 
+  // SPA fallback - Should be the LAST route before error handler
   app.get("*", (req, res) => {
+    // Only serve index.html for non-API routes
     if (!req.path.startsWith('/api')) {
-      res.sendFile(path.resolve(frontendPath, "index.html"));
+      const indexPath = path.resolve(frontendPath, "index.html");
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error(`[SPA Error] Failed to send index.html: ${err.message}`);
+          res.status(500).send("Frontend build not found. Please run 'npm run build' in the frontend directory.");
+        }
+      });
+    } else {
+        // Fallthrough for missing API routes
+        res.status(404).json({ message: "API endpoint not found" });
     }
   });
 }
@@ -47,4 +60,7 @@ const errorHandler = require("./middleware/errorMiddleware");
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
