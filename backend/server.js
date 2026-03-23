@@ -34,23 +34,19 @@ if (process.env.NODE_ENV === "production" || process.env.RENDER) {
   const frontendPath = path.join(rootDir, "frontend", "dist");
   
   console.log(`[Production] Serving static files from: ${frontendPath}`);
-  
   app.use(express.static(frontendPath));
 
-  // SPA fallback - Should be the LAST route before error handler
-  app.get("(.*)", (req, res) => {
-    // Only serve index.html for non-API routes
+  // SPA fallback using middleware to avoid compatibility issues with '*' wildcards in Node v25+
+  app.use((req, res, next) => {
     if (!req.path.startsWith('/api')) {
-      const indexPath = path.resolve(frontendPath, "index.html");
-      res.sendFile(indexPath, (err) => {
+      res.sendFile(path.resolve(frontendPath, "index.html"), (err) => {
         if (err) {
           console.error(`[SPA Error] Failed to send index.html: ${err.message}`);
           res.status(500).send("Frontend build not found. Please run 'npm run build' in the frontend directory.");
         }
       });
     } else {
-        // Fallthrough for missing API routes
-        res.status(404).json({ message: "API endpoint not found" });
+      next();
     }
   });
 }
