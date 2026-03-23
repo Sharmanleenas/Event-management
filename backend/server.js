@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production" || process.env.RENDER) {
   app.use(express.static(frontendPath));
 
   // SPA fallback - Should be the LAST route before error handler
-  app.get("*", (req, res) => {
+  app.get("(.*)", (req, res) => {
     // Only serve index.html for non-API routes
     if (!req.path.startsWith('/api')) {
       const indexPath = path.resolve(frontendPath, "index.html");
